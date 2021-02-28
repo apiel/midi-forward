@@ -15,7 +15,7 @@ function onMIDISuccess(midiAccess) {
     midi = midiAccess;
     midiAccess.inputs.forEach((midiInput) => {
         console.log('midiInput', midiInput.name, midiInput);
-        midiInput.onmidimessage = onMIDIMessage;
+        midiInput.onmidimessage = onMIDIMessage(midiInput.id);
     });
 
     midiAccess.outputs.forEach((midiOutput, key) => {
@@ -29,7 +29,7 @@ function onMIDISuccess(midiAccess) {
         console.log('midiInput', midiInput.name, midiInput);
         document.getElementById(
             'input',
-        ).innerHTML += `<li>${midiInput.name}</li>`;
+        ).innerHTML += `<option value="${midiInput.id}">${midiInput.name}</option>`;
     });
 }
 
@@ -40,9 +40,13 @@ function onMIDIFailure(error) {
     );
 }
 
-function onMIDIMessage({ data }) {
-    // console.log('MIDI data', data);
-    const { value: key } = document.getElementById('output');
-    const output = midi.outputs.get(key);
-    output.send(data);
+function onMIDIMessage(id) {
+    return ({ data }) => {
+        const val = document.getElementById('input').value;
+        if (val === 'all' || id === val) {
+            const { value: key } = document.getElementById('output');
+            const output = midi.outputs.get(key);
+            output.send(data);
+        }
+    };
 }

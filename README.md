@@ -1,3 +1,3 @@
 # midi-forward
 
-https://apiel.github.io/read-forward/
+https://apiel.github.io/midi-forward/
